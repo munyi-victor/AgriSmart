@@ -1,14 +1,37 @@
 import {useState} from "react";
-import {StyleSheet, TextInput, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, TextInput, View, Text, TouchableOpacity, Alert, Button, ActivityIndicator} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import {StatusBar} from "expo-status-bar";
-import {Link} from "expo-router";
+import {Link, router} from "expo-router";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen(){
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [secure, setSecure] = useState(true);
+	const [formErrors, setFormErros] = useState('');
+	const [loading, setLoading] = useState(false);
+
+	const handleLogin = async () => {
+		setLoading(true);
+
+	    try {
+	    	const response = axios.post("http://localhost:3000/api/users/login", {
+			    email,
+			    password,
+		  	})
+
+	      AsyncStorage.setItem("userInfo", email);
+	      Alert.alert("Success", "Login successful!");
+	      router.replace("/home"); 
+	    } catch (error) {
+	      Alert.alert("Login Failed", error?.data?.message || error?.error);
+	    } finally {
+	      setLoading(false);
+	    }
+	}
 	return (
 		<View style={styles.loginContainer}>
 			<ThemedText type="title" style={styles.titleStyle}>Login</ThemedText>
@@ -19,6 +42,7 @@ export default function LoginScreen(){
 					<TextInput
 					  inputMode="email"
 					  keyboardType="email-address"
+					  autoCapitalize="none"
 					  placeholder="Enter your email"
 			          style={styles.input}
 			          onChangeText={setEmail}
@@ -41,9 +65,9 @@ export default function LoginScreen(){
 				        </TouchableOpacity>
 					</View>
 				</View>
-				<Link href="/" style={styles.btnStyle}>
-		          <ThemedText type="subtitle">Login</ThemedText>
-		        </Link>
+				<Text style={styles.formErrors}>{formErrors}</Text>
+		        <Button title="Login" color="#1B5E20" onPress={handleLogin} />
+		        {loading && <ActivityIndicator size="large" color="#1B5E20" />}
 			</View>
 			<ThemedText style={{color:"#000"}}>Dont have an account? {" "}
 				<Link href="/register">
@@ -64,13 +88,13 @@ const styles = StyleSheet.create({
 	    backgroundColor:"#fff",
 	},
 	titleStyle:{
-		color:"#000",
+		color:"#1B5E20",
 	},
 	input:{
 	    borderWidth: 1,
 	    borderRadius:5,
 	    padding: 10,
-	    width:250,
+	    width:300,
 	    backgroundColor:"#fff",
 	},
 	passwordInput:{
@@ -99,9 +123,10 @@ const styles = StyleSheet.create({
 		borderRadius:5,
 		padding:5,
 		display:"flex",
-		textAlign:"center"
+		alignItems:"center"
 	},
 	btnText:{
 		color:"#fff",
+		fontSize: 20
 	}
 })

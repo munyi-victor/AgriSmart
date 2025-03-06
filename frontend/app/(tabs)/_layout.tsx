@@ -14,8 +14,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: "Buton",
+        headerShown: true,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
@@ -29,6 +28,7 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Home',
+          // headerShown:true,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
@@ -36,7 +36,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          headerShown:true,
+          // headerShown:true,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />
