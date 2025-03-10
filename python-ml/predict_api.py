@@ -1,32 +1,40 @@
+# predict_api.py (or app.py - choose one name)
 from flask import Flask, request, jsonify
 import joblib
-import numpy as np
+import pandas as pd
 
 app = Flask(__name__)
 
-model = joblib.load('crop_recommendation_model.pkl')
+# Load the trained model
+try:
+    model = joblib.load("crop_model.joblib")
+except FileNotFoundError:
+    print("Error: Model file not found. Please train the model first.")
+    model = None
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.get_json()
-    N = data['N']
-    P = data['P']
-    K = data['K']
-    temperature = data['temperature']
-    humidity = data['humidity']
-    ph = data['ph']
-    rainfall = data['rainfall']
+@app.route('/recommend', methods=['POST'])
+def predict_crop():
+    """Predicts crop recommendations based on input data."""
+    if model is None:
+        return jsonify({"error": "Model not loaded. Train the model first."}), 500
 
-    input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
-    prediction = model.predict(input_data)
+    try:
+        data = request.get_json()
+        rainfall = data['Rainfall']
+        humidity = data['Humidity']
+        temperature = data['Temperature']
+        ph = data['pH']
 
-    return jsonify({'prediction': prediction.tolist()})
+        input_data = pd.DataFrame([[rainfall, humidity, temperature, ph]], columns=['Rainfall', 'Humidity', 'Temperature', 'pH'])
 
+        probabilities = model.predict_proba(input_data)[0]
+        top_crops_indices = probabilities.argsort()[-3:][::-1]  # Get indices of top 3 probabilities
+        top_crops = [model.classes_[i] for i in top_crops_indices]
 
-@app.route('/getdata', methods=['GET'])
-def getdata():
-    return jsonify({"hello world":"hello sir"})
+        return jsonify({"recommended_crops": top_crops})
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(debug=True)

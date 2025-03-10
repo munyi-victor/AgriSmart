@@ -6,7 +6,7 @@ export default function HomeTab(){
 	return (
 		<View>
 			<Text>Welcome Home</Text>
-			<StatusBar style="dark"/>
+			<StatusBar style="light"/>
 		</View>
 	);
 }

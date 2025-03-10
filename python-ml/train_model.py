@@ -1,14 +1,37 @@
+# train_model.py
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 
-data = pd.read_csv('crop_data.csv')
+def train_crop_recommendation_model(data_path="seasonal_crops_dataset.csv", model_path="crop_model.joblib"):
+    """Trains a Random Forest Classifier for crop recommendation."""
 
-x = data[['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']]
-y = data['label']
+    try:
+        df = pd.read_csv(data_path)
+    except FileNotFoundError:
+        print(f"Error: File not found at {data_path}")
+        return
 
-clf = RandomForestClassifier()
-clf.fit(x, y)
+    # Check for the 'Label' column (crop names)
+    if 'Label' not in df.columns:
+        print("Error: 'Label' column not found in the dataset.")
+        return
 
-joblib.dump(clf, 'crop_recommendation_model.pkl')
-print('Model trained successfully')
+    # Prepare features (X) and target (y)
+    X = df.drop('Label', axis=1)
+    y = df['Label']
+
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Train a Random Forest Classifier
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Save the trained model
+    joblib.dump(model, model_path)
+    print(f"Model trained and saved to {model_path}")
+
+if __name__ == "__main__":
+    train_crop_recommendation_model()
