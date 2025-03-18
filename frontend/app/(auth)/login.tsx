@@ -14,24 +14,25 @@ export default function LoginScreen(){
 	const [formErrors, setFormErros] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	const API_URL = "http://192.168.17.101:3000/api/users/login"
+
 	const handleLogin = async () => {
-		setLoading(true);
+	  try {
+	    setLoading(true);
+	    const response = await axios.post(API_URL, { email, password });
 
-	    try {
-	    	const response = axios.post("http://localhost:3000/api/users/login", {
-			    email,
-			    password,
-		  	})
-
-	      AsyncStorage.setItem("userInfo", email);
+	    if (response) {
+	      await AsyncStorage.setItem("userInfo", JSON.stringify(response.data));
 	      Alert.alert("Success", "Login successful!");
-	      router.replace("/home"); 
-	    } catch (error) {
-	      Alert.alert("Login Failed", error?.data?.message || error?.error);
-	    } finally {
-	      setLoading(false);
+	      router.replace("/home");
 	    }
-	}
+	  } catch (error) {
+	    Alert.alert("Login failed", error?.response?.data?.message || "Something went wrong");
+	  } finally {
+	    setLoading(false);
+	  }
+	};
+
 	return (
 		<View style={styles.loginContainer}>
 			<ThemedText type="title" style={styles.titleStyle}>Login</ThemedText>

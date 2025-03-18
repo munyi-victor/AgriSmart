@@ -1,15 +1,41 @@
-import {StyleSheet, View, Text, TouchableOpacity, Image, Alert} from 'react-native';
+import { useEffect, useState } from "react";
+import {StyleSheet, View, Text, TouchableOpacity, Image, Alert, ActivityIndicator} from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from '@/components/ThemedText';
 import {StatusBar} from "expo-status-bar";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IconSymbol } from '@/components/ui/IconSymbol';
 import {router} from "expo-router";
 
 export default function ProfileTab(){
-	const handleLogout = () => {
+	  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+	  const [loading, setLoading] = useState(true);
+
+	  useEffect(() => {
+	    const getUserData = async () => {
+	      try {
+	        const userInfo = await AsyncStorage.getItem("userInfo");
+	        if (userInfo) {
+	          setUser(JSON.parse(userInfo)); 
+	        }
+	      } catch (error) {
+	        console.error("Failed to load user data:", error);
+	      } finally {
+	        setLoading(false);
+	      }
+	    };
+
+	    getUserData();
+	  }, []);
+
+	  if (loading) {
+	    return <ActivityIndicator size="large" color="green" />;
+	  }
+	const handleLogout = async () => {
 		try {
-			axios.get("http://localhost:3000/api/users/logout");
-			AsyncStorage.removeItem("userInfo");
+			await axios.get("http://localhost:3000/api/users/logout");
+			await AsyncStorage.removeItem("userInfo");
 			Alert.alert("Success", "Logged out successfully!");
 			router.replace("/login");
 		} catch (error) {
@@ -17,27 +43,32 @@ export default function ProfileTab(){
 		}
 	}
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<View style={styles.profileHeader}>
 				<Image source={require("../../assets/dp.png")} style={styles.dpStyle} />
-				<Text>Munyi Victor</Text>
-				<Text>munyivictor6@gmail.com</Text>
+				{user && (
+					<>
+						<Text style={{fontWeight:"bold"}}>{user.name}</Text>
+						<Text>{user.email}</Text>
+					</>
+				)}
 			</View>
 			<View>
 				<TouchableOpacity onPress={handleLogout} style={styles.button}>
-					<ThemedText style={{color:"#000"}}>Logout</ThemedText>					
+					<ThemedText style={{color:"#000", fontSize:18}}>Logout</ThemedText>	
+					<IconSymbol size={22} name="logout.fill" />				
 				</TouchableOpacity>
 			</View>
 
 			<StatusBar style="dark"/>
-		</View>
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff",
+		backgroundColor: "#eee",
 		alignItems:"center",
 		paddingVertical:15,
 		justifyContent:"space-between",
@@ -47,13 +78,17 @@ const styles = StyleSheet.create({
 		alignItems:"center",
 		justifyContent:"center",
 		flexDirection:"column",
-		gap:8
+		gap:8,
+		marginTop:18
 	},
 	dpStyle:{
 		height:140,
 		width:140
 	},
 	button:{
-		backgroundColor:""
+		backgroundColor:"",
+		display:"flex",
+		flexDirection:"row",
+		gap:2
 	}
 })

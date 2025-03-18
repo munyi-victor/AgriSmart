@@ -19,6 +19,8 @@ export default function RegisterScreen(){
 	const [formErrors, setFormErros] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	const API_URL = "http://192.168.17.101:3000/api/users/register"
+
 	const handleRegister = async () => {
 		setLoading(true);
 
@@ -31,7 +33,7 @@ export default function RegisterScreen(){
 		}
 
 		try {
-			axios.post( 'http://localhost:3000/api/users/register', {
+			await axios.post(API_URL, {
 			    name,
 			    email,
 			    password,
