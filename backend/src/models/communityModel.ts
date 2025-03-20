@@ -1,11 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+import {ICommunity} from '../types';
 
-const communitySchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    createdAt: { type: Date, default: Date.now },
-})
+const CommunitySchema = new Schema<ICommunity>({
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    admin: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    members: [{ type: Schema.Types.ObjectId, ref: "User" }]
+});
 
-const Community = mongoose.model("Community", communitySchema);
+const Community = mongoose.model<ICommunity>("Community", CommunitySchema);
 export default Community;

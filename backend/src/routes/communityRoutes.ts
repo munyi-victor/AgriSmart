@@ -1,11 +1,13 @@
 import express from "express";
 import { protect } from "../middleware/authMiddleware";
-import { getCommunities, createCommunity, joinCommunity } from "../controllers/communityController";
+import { createCommunity, joinCommunity, leaveCommunity, getCommunityInfo, getCommunities } from "../controllers/communityController";
 
 const router = express.Router();
 
-router.route("/").get(protect, getCommunities);
-router.route("/create").post(protect, createCommunity);
-router.route("/join").post(protect, joinCommunity);
+router.get("/", protect, getCommunities);
+router.post("/create", protect, createCommunity);
+router.post("/join", protect, joinCommunity);
+router.post("/leave", protect, leaveCommunity);
+router.get("/:communityId", protect, getCommunityInfo);
 
 export default router;

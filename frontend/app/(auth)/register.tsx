@@ -1,6 +1,5 @@
 import {useState} from "react";
 import {StyleSheet, TextInput, View, Text, TouchableOpacity, Button, Alert, ActivityIndicator} from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import {StatusBar} from "expo-status-bar";
 import {Link, router} from "expo-router";
@@ -19,7 +18,7 @@ export default function RegisterScreen(){
 	const [formErrors, setFormErros] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const API_URL = "http://192.168.17.101:3000/api/users/register"
+	const API_URL = "http://192.168.19.165:3000/api/users/register"
 
 	const handleRegister = async () => {
 		setLoading(true);

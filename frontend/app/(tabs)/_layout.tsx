@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Stack, Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 
@@ -26,21 +26,24 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Home',
-          // headerShown:true,
+          headerShown:true,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="community"
+        name="communities/index"
         options={{
-          title: 'Community',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="people.fill" color={color} />,
+          title: 'Communities',
+          headerShown: true,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="community.fill" color={color} />,
         }}
       />
+      
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
+          headerShown: true,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
         }}
       />

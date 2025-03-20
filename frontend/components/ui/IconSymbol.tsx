@@ -12,10 +12,10 @@ const MAPPING = {
   'house.fill': 'home',
   'paperplane.fill': 'send',
   'person.fill': 'person',
-  'people.fill':'people',
+  'community.fill':'people',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
-  "logout.fill": "logout",
+  "out.fill": "logout",
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

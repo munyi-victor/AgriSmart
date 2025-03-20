@@ -1,44 +1,44 @@
+# app.py
+
 from flask import Flask, request, jsonify
-import tensorflow as tf
+import joblib
 import numpy as np
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
-
-# Load the trained model
-model = tf.keras.models.load_model("crop_recommendation_model.h5")
-
-# Load label encoder and scaler
-label_classes = np.load("label_classes.npy", allow_pickle=True)
-scaler_mean = np.load("scaler.npy", allow_pickle=True)
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['POST'])
-def predict():
+# Load the trained model
+MODEL_PATH = "crop_recommendation_model.pkl"
+model = joblib.load(MODEL_PATH)
+
+@app.route('/recommend', methods=['POST'])
+def recommend_crops():
     try:
-        # Get input data
-        data = request.get_json()
-        rainfall = data.get("rainfall")
-        humidity = data.get("humidity")
-        temperature = data.get("temperature")
+        # Get input data from the request
+        data = request.json
+        temperature = data.get('temperature')
+        humidity = data.get('humidity')
+        rainfall = data.get('rainfall')
 
-        # Convert to numpy array and normalize
-        input_features = np.array([[rainfall, humidity, temperature]])
-        scaler = StandardScaler()
-        scaler.mean_ = scaler_mean
-        input_scaled = scaler.transform(input_features)
+        # Validate input
+        if None in [temperature, humidity, rainfall]:
+            return jsonify({"error": "Missing input parameters"}), 400
 
-        # Make prediction
-        predictions = model.predict(input_scaled)[0]
+        # Prepare input for prediction
+        input_data = np.array([[temperature, humidity, rainfall]])
 
-        # Get top 3 crops
-        top_indices = predictions.argsort()[-3:][::-1]
-        recommended_crops = [label_classes[i] for i in top_indices]
+        # Predict probabilities and get top 3 crops
+        probabilities = model.predict_proba(input_data)[0]
+        top_3_indices = probabilities.argsort()[-3:][::-1]
+        top_3_crops = [model.classes_[i] for i in top_3_indices]
 
-        return jsonify({"recommended_crops": recommended_crops})
+        # Return the recommendations
+        return jsonify({
+            "recommended_crops": top_3_crops,
+            "message": "Crop recommendations generated successfully."
+        }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=5000)

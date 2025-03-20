@@ -9,7 +9,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import {router} from "expo-router";
 
 export default function ProfileTab(){
-	  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+	  const [user, setUser] = useState<{ _id:string; name: string; email: string } | null>(null);
 	  const [loading, setLoading] = useState(true);
 
 	  useEffect(() => {
@@ -34,7 +34,7 @@ export default function ProfileTab(){
 	  }
 	const handleLogout = async () => {
 		try {
-			await axios.get("http://localhost:3000/api/users/logout");
+			await axios.get("http://192.168.19.165:3000/api/users/logout");
 			await AsyncStorage.removeItem("userInfo");
 			Alert.alert("Success", "Logged out successfully!");
 			router.replace("/login");
@@ -56,7 +56,7 @@ export default function ProfileTab(){
 			<View>
 				<TouchableOpacity onPress={handleLogout} style={styles.button}>
 					<ThemedText style={{color:"#000", fontSize:18}}>Logout</ThemedText>	
-					<IconSymbol size={22} name="logout.fill" />				
+					<IconSymbol size={22} name="out.fill" />				
 				</TouchableOpacity>
 			</View>
 

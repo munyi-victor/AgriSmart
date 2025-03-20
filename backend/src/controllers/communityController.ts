@@ -1,50 +1,68 @@
+import { Response } from "express";
 import Community from "../models/communityModel";
 import User from "../models/userModel";
-import asyncHandler from "express-async-handler";
-import { Request } from "express";
 
-const getCommunities = asyncHandler(async (req, res) => {
-    const users = await Community.find();
-    res.json(users);
-});
-
-const createCommunity = asyncHandler(async (req:Request, res:any) => {
-    const { name, description, userId } = req.body;
-
+export const getCommunities = async (req :any, res:any) => {
     try {
-      const user = await User.findById(userId);
-      if (!user) return res.status(404).json({ error: 'User not found' });
-  
-      const community = new Community({ name, description, members: [userId] });
-      await community.save();
-  
-      res.status(201).json({ message: 'Community created successfully', community });
+        const communities = await Community.find();
+
+        if (!communities) return res.status(404).json({error: "No communities found"});
+        res.status(200).json(communities);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Failed to create community' });
+        res.status(500).json({error: "Error fetching communities"});
     }
-})
+}
 
-const joinCommunity = asyncHandler(async (req:Request, res:any) => {
-  const { communityId, userId } = req.body;
-
-  try {
-    const community = await Community.findById(communityId);
-    if (!community) return res.status(404).json({ error: 'Community not found' });
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    if (!community.members.includes(userId)) {
-      community.members.push(userId);
-      await community.save();
+export const createCommunity = async (req: any, res: any) => {
+    try {
+        const { name, description } = req.body;
+        const adminId = req.user._id;
+        const community = await Community.create({ name, description, admin: adminId, members: [adminId] });
+        res.status(201).json(community);
+    } catch (error) {
+        res.status(500).json({ error: "Error creating community" });
     }
+};
 
-    res.status(200).json({ message: 'Joined community successfully', community });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to join community' });
-  }
-})
+export const joinCommunity = async (req: any, res: any) => {
+    try {
+        const { communityId } = req.body;
+        const userId = req.user._id;
+        const community = await Community.findById(communityId);
+        if (!community) return res.status(404).json({ error: "Community not found" });
 
-export {getCommunities, createCommunity, joinCommunity};
+        if (!community.members.includes(userId)) {
+            community.members.push(userId);
+            await community.save();
+        }
+        res.status(200).json({ message: "Joined community" });
+    } catch (error) {
+        res.status(500).json({ error: "Error joining community" });
+    }
+};
+
+export const leaveCommunity = async (req: any, res: any) => {
+    try {
+        const { userId, communityId } = req.body;
+        const community = await Community.findById(communityId);
+        if (!community) return res.status(404).json({ error: "Community not found" });
+
+        community.members = community.members.filter((member) => member.toString() !== userId);
+        await community.save();
+        res.status(200).json({ message: "Left community" });
+    } catch (error) {
+        res.status(500).json({ error: "Error leaving community" });
+    }
+};
+
+export const getCommunityInfo = async (req: any, res: any) => {
+    try {
+        const { communityId } = req.params;
+        const community = await Community.findById(communityId).populate("members", "name");
+        if (!community) return res.status(404).json({ error: "Community not found" });
+
+        res.status(200).json(community);
+    } catch (error) {
+        res.status(500).json({ error: "Error retrieving community info" });
+    }
+};

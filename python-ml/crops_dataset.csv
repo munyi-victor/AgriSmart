@@ -1,4 +1,4 @@
-Rainfall (mm),Humidity (%),Temperature (°C),Crop
+rainfall,humidity,temperature,crop
 1174.7,53.0,27.5,Onions
 227.0,42.0,14.1,Rice
 962.0,55.8,16.7,Rice
