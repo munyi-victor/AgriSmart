@@ -31,7 +31,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="communities/index"
+        name="communities"
         options={{
           title: 'Communities',
           headerShown: true,

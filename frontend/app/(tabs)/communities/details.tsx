@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 
 const CommunityDetails = () => {
   const { id } = useLocalSearchParams();
-  const [community, setCommunity] = useState(null);
+  const [community, setCommunity] = useState<{_id: string; name: string; description: string; members: {_id: string; name: string;}[]} | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const CommunityDetails = () => {
       {loading && <ActivityIndicator size="large" color="#1B5E20" />}
       <View>
         <View style={styles.profileHeader}>
-          <Image source={require("../../../../assets/dp.png")} style={styles.dpStyle} />
+          <Image source={require("../../../assets/dp.png")} style={styles.dpStyle} />
           
           <Text style={{ fontSize: 22, fontWeight: "bold" }}>{community.name}</Text>
           <Text>{community.description}</Text>
@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
     alignItems:"center",
     justifyContent:"center",
     flexDirection:"column",
-    gap:8,
     marginTop:18
   },
   dpStyle:{

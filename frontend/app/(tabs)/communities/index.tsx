@@ -78,7 +78,6 @@ export default function CommunityTab() {
 			});
 
 			Alert.alert('Success', 'Joined community successfully');
-			// router.push(`/communities/${communityId}` as any);
 			fetchCommunities();
 		} catch (error) {
 			console.error(error);
@@ -109,7 +108,7 @@ export default function CommunityTab() {
 
 							<View>
 								{isMember ? (
-									<Button title="View community" color={"#1B5E20"} onPress={() => router.push(`/communities/${item._id}?name=${item.name}` as any)} />
+									<Button title="View community" color={"#1B5E20"} onPress={() => router.push(`/communities/chat?id=${item._id}` as any)} />
 								) : (
 									<Button title="Join" color={"#1B5E20"} onPress={() => joinCommunity(item._id)} />
 								)}
