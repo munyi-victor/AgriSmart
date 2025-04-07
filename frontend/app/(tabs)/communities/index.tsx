@@ -32,7 +32,7 @@ export default function CommunityTab() {
 	const fetchCommunities = async () => {
 		setLoading(true)
 		try {
-			const response = await axios.get('http://192.168.19.165:3000/api/communities');
+			const response = await axios.get('http://192.168.54.165:3000/api/communities');
 			setCommunities(response.data);
 		} catch (error) {
 			console.error(error);
@@ -54,7 +54,7 @@ export default function CommunityTab() {
 				return;
 			}
 
-			await axios.post('http://192.168.19.165:3000/api/communities/create', {
+			await axios.post('http://192.168.54.165:3000/api/communities/create', {
 				name: newCommunityName,
 				description: newCommunityDescription,
 			});
@@ -73,7 +73,7 @@ export default function CommunityTab() {
 	// Join an existing community
 	const joinCommunity = async (communityId: string) => {
 		try {
-			await axios.post('http://192.168.19.165:3000/api/communities/join', {
+			await axios.post('http://192.168.54.165:3000/api/communities/join', {
 				communityId,
 			});
 

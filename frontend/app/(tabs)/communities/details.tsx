@@ -5,14 +5,14 @@ import { useLocalSearchParams } from "expo-router";
 
 const CommunityDetails = () => {
   const { id } = useLocalSearchParams();
-  const [community, setCommunity] = useState<{_id: string; name: string; description: string; members: {_id: string; name: string;}[]} | null>(null);
+  const [community, setCommunity] = useState<{ _id: string; name: string; description: string; members: { _id: string; name: string; }[] } | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCommunityDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://192.168.19.165:3000/api/communities/${id}`);
+        const response = await fetch(`http://192.168.54.165:3000/api/communities/${id}`);
         const data = await response.json();
         setCommunity(data);
       } catch (error) {
@@ -33,7 +33,7 @@ const CommunityDetails = () => {
       <View>
         <View style={styles.profileHeader}>
           <Image source={require("../../../assets/dp.png")} style={styles.dpStyle} />
-          
+
           <Text style={{ fontSize: 22, fontWeight: "bold" }}>{community.name}</Text>
           <Text>{community.description}</Text>
         </View>
@@ -53,18 +53,18 @@ const CommunityDetails = () => {
 export default CommunityDetails;
 
 const styles = StyleSheet.create({
-  infoContainer:{
-    padding:20
+  infoContainer: {
+    padding: 20
   },
-  profileHeader:{
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"center",
-    flexDirection:"column",
-    marginTop:18
+  profileHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    marginTop: 18
   },
-  dpStyle:{
-    height:140,
-    width:140
+  dpStyle: {
+    height: 140,
+    width: 140
   },
 })
