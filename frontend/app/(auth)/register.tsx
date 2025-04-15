@@ -18,7 +18,7 @@ export default function RegisterScreen() {
 	const [formErrors, setFormErros] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const API_URL = "http://192.168.54.165:3000/api/users/register"
+	const API_URL = "http://192.168.28.165:3000/api/users/register"
 
 	const handleRegister = async () => {
 		setLoading(true);

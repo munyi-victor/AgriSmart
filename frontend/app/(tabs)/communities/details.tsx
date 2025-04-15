@@ -12,7 +12,7 @@ const CommunityDetails = () => {
     const fetchCommunityDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://192.168.54.165:3000/api/communities/${id}`);
+        const response = await fetch(`http://192.168.28.165:3000/api/communities/${id}`);
         const data = await response.json();
         setCommunity(data);
       } catch (error) {

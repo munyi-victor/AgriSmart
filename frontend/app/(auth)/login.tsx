@@ -13,7 +13,7 @@ export default function LoginScreen() {
 	const [formErrors, setFormErros] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	const API_URL = "http://192.168.54.165:3000/api/users/login"
+	const API_URL = "http://192.168.28.165:3000/api/users/login"
 
 	const handleLogin = async () => {
 		try {

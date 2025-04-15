@@ -32,7 +32,7 @@ export default function CommunityTab() {
 	const fetchCommunities = async () => {
 		setLoading(true)
 		try {
-			const response = await axios.get('http://192.168.54.165:3000/api/communities');
+			const response = await axios.get('http://192.168.28.165:3000/api/communities');
 			setCommunities(response.data);
 		} catch (error) {
 			console.error(error);

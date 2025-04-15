@@ -34,7 +34,7 @@ export default function ProfileTab() {
 	}
 	const handleLogout = async () => {
 		try {
-			await axios.get("http://192.168.54.165:3000/api/users/logout");
+			await axios.get("http://192.168.28.165:3000/api/users/logout");
 			await AsyncStorage.removeItem("userInfo");
 			Alert.alert("Success", "Logged out successfully!");
 			router.replace("/login");

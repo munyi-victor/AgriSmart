@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { format } from "date-fns";
 
-const socket = io("http://192.168.54.165:3000");
+const socket = io("http://192.168.28.165:3000");
 
 const CommunityChatScreen = () => {
   const navigation = useNavigation();
@@ -81,7 +81,7 @@ const CommunityChatScreen = () => {
 
   // Fetch previous messages when component mounts
   useEffect(() => {
-    axios.get(`http://192.168.54.165:3000/api/communities/messages/${id}`)
+    axios.get(`http://192.168.28.165:3000/api/communities/messages/${id}`)
       .then((response) => setMessages(response.data))
       .catch((error) => console.error("Error fetching messages:", error));
   }, [id]);
